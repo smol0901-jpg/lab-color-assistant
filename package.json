@@ -7,12 +7,6 @@
     "start": "npx serve . -p 3000",
     "pages": "echo 'Push to GitHub and enable Pages in Settings'"
   },
-  "keywords": [
-    "spectrophotometer",
-    "CIE-Lab",
-    "powder-coating",
-    "RAL",
-    "color-matching"
-  ],
+  "keywords": ["spectrophotometer", "CIE-Lab", "powder-coating", "RAL", "color-matching"],
   "license": "MIT"
 }
