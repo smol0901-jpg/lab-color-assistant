@@ -1,0 +1,18 @@
+{
+  "name": "lab-color-correction-assistant",
+  "version": "1.0.0",
+  "description": "L*a*b* color correction assistant for powder coatings spectrophotometer",
+  "private": true,
+  "scripts": {
+    "start": "npx serve . -p 3000",
+    "pages": "echo 'Push to GitHub and enable Pages in Settings'"
+  },
+  "keywords": [
+    "spectrophotometer",
+    "CIE-Lab",
+    "powder-coating",
+    "RAL",
+    "color-matching"
+  ],
+  "license": "MIT"
+}
