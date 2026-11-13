@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Коррекция цвета по L*a*b*: покажите образец на графике и узнайте, какой колорант и сколько % добавить." />
+  <title>Коррекция цвета — L*a*b* ассистент</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+</head>
+<body>
+  <header>
+    <h1>Коррекция цвета</h1>
+    <p class="subtitle">Покажите пальцем, где образец относительно эталона — получите, что и сколько % добавить.</p>
+  </header>
+
+  <main class="layout">
+    <section class="col-plot">
+      <div class="card">
+        <div class="plot-head">
+          <h2>Где образец?</h2>
+          <div class="zoom" id="zoom">
+            <span>Масштаб ±</span>
+            <button data-r="0.5">0,5</button>
+            <button data-r="2.5">2,5</button>
+            <button data-r="5">5</button>
+            <button data-r="10">10</button>
+            <button data-r="20" class="active">20</button>
+            <button data-r="50">50</button>
+            <button data-r="100">100</button>
+          </div>
+        </div>
+        <canvas id="plot" width="480" height="480"></canvas>
+        <p class="axes-hint">↑ жёлтый (+b*) · ↓ синий (−b*) · ← зелёный (−a*) · → красный (+a*)</p>
+        <div class="l-strip-wrap">
+          <label>Светлее / темнее (L*)</label>
+          <input type="range" id="lStrip" min="0" max="100" step="0.1" value="50" />
+          <span id="lVal">50</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="col-side">
+      <div class="card">
+        <h2>Эталон</h2>
+        <div class="lab-inputs">
+          <label>L* <input type="number" id="refL" step="0.01" value="70" /></label>
+          <label>a* <input type="number" id="refA" step="0.01" value="0" /></label>
+          <label>b* <input type="number" id="refB" step="0.01" value="0" /></label>
+        </div>
+        <div class="color-swatch" id="refSwatch"></div>
+        <button id="btnPickRal">Выбрать RAL</button>
+      </div>
+
+      <div class="card">
+        <h2>Образец</h2>
+        <div class="lab-inputs">
+          <label>L* <input type="number" id="samL" step="0.01" value="70" /></label>
+          <label>a* <input type="number" id="samA" step="0.01" value="2" /></label>
+          <label>b* <input type="number" id="samB" step="0.01" value="-1" /></label>
+        </div>
+        <div class="color-swatch" id="samSwatch"></div>
+        <p id="deltaE">ΔE = —</p>
+      </div>
+
+      <div class="card highlight">
+        <h2>Что добавить</h2>
+        <div id="dosingResult">Ткните по графику или введите L*a*b* образца</div>
+        <div class="dose-step">
+          <span>Шаг:</span>
+          <button data-s="0.5" class="active">50%</button>
+          <button data-s="0.75">75%</button>
+          <button data-s="1">100%</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <section class="card wide">
+    <div class="btn-row">
+      <button id="btnHistory">Записать замер в историю</button>
+      <button class="secondary" id="btnSwap">Поменять эталон/образец</button>
+    </div>
+  </section>
+
+  <section class="card wide">
+    <h2>Обучение по пробной добавке</h2>
+    <p class="note">Сила колорантов зависит от вашей базы. Чтобы расчёт стал точным: запомните образец «до», добавьте один колорант, замерьте новый образец и нажмите «Обучить».</p>
+    <div class="opts">
+      <label>Колорант<select id="trialColorant"></select></label>
+      <label>Добавлено, %<input type="number" id="trialDose" step="0.0001" min="0" value="0.1" /></label>
+      <button id="btnTrialBefore">1. Запомнить образец «до»</button>
+      <button id="btnTrialLearn" class="secondary">2. Обучить по новому замеру</button>
+    </div>
+    <p class="note" id="trialStatus"></p>
+  </section>
+
+  <details class="card wide">
+    <summary>Колоранты и их сила (на 1 % добавки)</summary>
+    <p class="note">Стартовые значения ориентировочные. Правьте под свои материалы.</p>
+    <div id="colorantTable" class="ctable"></div>
+    <div class="btn-row"><button class="secondary" id="btnResetColorants">Сбросить к стартовым</button></div>
+  </details>
+
+  <section class="card wide">
+    <h2>История замеров</h2>
+    <div class="history-list" id="historyList"></div>
+    <div class="btn-row"><button class="secondary" id="btnClearHistory">Очистить историю</button></div>
+  </section>
+
+  <section class="card wide">
+    <h2>Справочник RAL Classic <span id="ralCount" class="note"></span></h2>
+    <div class="ral-filter" id="ralFilter"></div>
+    <p class="note">Нажмите на цвет — он станет эталоном. Для точной работы используйте замер прибора.</p>
+    <div class="ral-grid" id="ralGrid"></div>
+  </section>
+
+  <div class="footer">Работает офлайн · GitHub Pages · расчёт ориентировочный, проверяйте замером</div>
+
+  <script src="js/lab.js"></script>
+  <script src="js/colorants.js"></script>
+  <script src="js/dosing.js"></script>
+  <script src="js/plot.js"></script>
+  <script src="js/ral-data.js"></script>
+  <script src="js/history.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
